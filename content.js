@@ -61,27 +61,27 @@ function common(navName) {
     if (!currentNode.previousElementSibling) {
         prevNeighbour.disabled = true;
     }else prevNeighbour.disabled = false;
-}
+};
 //showParent handler
 function onShowParentClick() {
 const navName = (currentNode.parentElement);
     common(navName)
-}
+};
 //showChild handler
 function onShowChildClick() {
     const navName = (currentNode.firstElementChild);
     common(navName)
-}
+};
 //nextNeighbour handler
 function onnextNeighbourClick() {
     const navName = (currentNode.nextElementSibling);
     common(navName)
-}
+};
 //prevNeighbour handler
 function onprevNeighbourClick() {
     const navName = (currentNode.previousElementSibling);
     common(navName)
-}
+};
 //clear function
 function clearInput() {
 input.value = "";
@@ -93,11 +93,11 @@ currentNode.style.cssText = `
 border:none
 `
 currentNode = null;
-}
+};
 //close function
 function closeHandler() {
     container.style.display = "none";
-}
+};
 //append to DOM
 document.body.prepend(container);
 container.appendChild(input);
@@ -108,7 +108,6 @@ container.appendChild(showChild).classList.add("btn", "showChild");
 container.appendChild(nextNeighbour).classList.add("btn", "nextNeighbour");
 container.appendChild(prevNeighbour).classList.add("btn", "prevNeighbour");
 container.prepend(closeBtn);
-
 
 search.innerHTML = "search";
 clear.innerHTML = "clear";
@@ -171,7 +170,6 @@ cursor:pointer;
 container.onmousedown = (e) => {
     let shiftX = e.clientX - container.getBoundingClientRect().left;
     let shiftY = e.clientY - container.getBoundingClientRect().top;
-
 function setXY(pageX, pageY) {
     container.style.left = pageX -shiftX + 'px';
     container.style.top = pageY -shiftY + 'px';
@@ -180,7 +178,7 @@ function mouseMoveHandler(event) {
     setXY(event.pageX, event.pageY)
 };
 
-setXY(e.pageX, e.pageY)
+setXY(e.pageX, e.pageY);
 document.addEventListener("mousemove", mouseMoveHandler);
 container.onmouseup = () => {
 document.removeEventListener("mousemove", mouseMoveHandler);
