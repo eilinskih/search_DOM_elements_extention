@@ -10,35 +10,47 @@ const prevNeighbour = document.createElement("button");
 const btnGroup = document.getElementsByClassName("btn");
 const closeBtn = document.createElement("img");
 let currentNode = null;
+let btnArr = [
+    {elem: input, classes: ["input"], text: ""},
+    {elem: search, classes: ["btn", "search"], text: "search"},
+    {elem: clear, classes: ["btn", "clear"], text: "clear"},
+    {elem: showParent, classes: ["btn", "showParent"], text: "show parent"},
+    {elem: showChild, classes: ["btn", "showChild"], text: "show child"},
+    {elem: nextNeighbour, classes: ["btn", "nextNeighbour"], text: "next neighbour"},
+    {elem: prevNeighbour, classes: ["btn", "prevNeighbour"], text: "prev neighbour"}
+]
+
 //search btn click-handler
 function onSearchClick() {
     if (input.value === "") {
-    alert("please, enter the name of element")
-    } else { 
-currentNode = document.querySelector(input.value)||document.getElementById(input.value)||document.getElementsByTagName(input.value)[0]||document.getElementsByClassName(input.value)[0];
-if (!currentNode) {
-    input.value = "";
-    return alert("no such node")
-}else{
-    currentNode.style.cssText = `
-border:red 5px solid;
-border-radius:10px;
-`
-if (currentNode.children.length) {
-    showChild.disabled = false;
-}
-if (currentNode.parentElement) {
-    showParent.disabled = false;
-}
-if (currentNode.nextElementSibling) {
-    nextNeighbour.disabled = false;
-}
-if (currentNode.previousElementSibling) {
-    prevNeighbour.disabled = false;
-}
-return console.log(currentNode)
-}
-}};
+        alert("please, enter the name of element")
+    } else {
+        currentNode = document.querySelector(input.value) || document.getElementById(input.value) || document.getElementsByTagName(input.value)[0] || document.getElementsByClassName(input.value)[0];
+        if (!currentNode) {
+            input.value = "";
+            return alert("no such node")
+        } else {
+            currentNode.style.cssText = `
+            border:red 5px solid;
+            border-radius:10px;
+            `
+            if (currentNode.children.length) {
+                showChild.disabled = false;
+            }
+            if (currentNode.parentElement) {
+                showParent.disabled = false;
+            }
+            if (currentNode.nextElementSibling) {
+                nextNeighbour.disabled = false;
+            }
+            if (currentNode.previousElementSibling) {
+                prevNeighbour.disabled = false;
+            }
+            return console.log(currentNode)
+        }
+    }
+};
+
 //common handler
 function common(navName) {
     currentNode.style.cssText = `
@@ -48,66 +60,79 @@ function common(navName) {
     currentNode.style.cssText = `
     border:red 2px solid;
     border-radius:10px;
-    `; 
+    `;
     if (!currentNode.children.length) {
         showChild.disabled = true;
-    }else showChild.disabled = false;
+    } else showChild.disabled = false;
     if (!currentNode.parentElement) {
         showParent.disabled = true;
-    }else showParent.disabled = false;
+    } else showParent.disabled = false;
     if (!currentNode.nextElementSibling) {
         nextNeighbour.disabled = true;
-    }else nextNeighbour.disabled = false;
+    } else nextNeighbour.disabled = false;
     if (!currentNode.previousElementSibling) {
         prevNeighbour.disabled = true;
-    }else prevNeighbour.disabled = false;
+    } else prevNeighbour.disabled = false;
 };
+
 //showParent handler
 function onShowParentClick() {
-const navName = (currentNode.parentElement);
+    const navName = (currentNode.parentElement);
     common(navName)
 };
+
 //showChild handler
 function onShowChildClick() {
     const navName = (currentNode.firstElementChild);
     common(navName)
 };
+
 //nextNeighbour handler
 function onnextNeighbourClick() {
     const navName = (currentNode.nextElementSibling);
     common(navName)
 };
+
 //prevNeighbour handler
 function onprevNeighbourClick() {
     const navName = (currentNode.previousElementSibling);
     common(navName)
 };
+
 //clear function
 function clearInput() {
-input.value = "";
-showParent.disabled = true;
-showChild.disabled = true;
-nextNeighbour.disabled = true;
-prevNeighbour.disabled = true;
-currentNode.style.cssText = `
+    input.value = "";
+    showParent.disabled = true;
+    showChild.disabled = true;
+    nextNeighbour.disabled = true;
+    prevNeighbour.disabled = true;
+    currentNode.style.cssText = `
 border:none
 `
-currentNode = null;
+    currentNode = null;
 };
+
 //close function
 function closeHandler() {
     container.style.display = "none";
 };
+
 //append to DOM
+function appendElement(elem, classes) {
+    container.appendChild(elem)
+    elem.classList.add(classes)
+};
+
+function innerHtmlFunc(elem, text) {
+    elem.innerHTML = text
+};
+
 document.body.prepend(container);
-container.appendChild(input);
-container.appendChild(search).classList.add("btn", "search");
-container.appendChild(clear).classList.add("btn", "clear");
-container.appendChild(showParent).classList.add("btn", "showParent");
-container.appendChild(showChild).classList.add("btn", "showChild");
-container.appendChild(nextNeighbour).classList.add("btn", "nextNeighbour");
-container.appendChild(prevNeighbour).classList.add("btn", "prevNeighbour");
 container.prepend(closeBtn);
+btnArr.map((btn) => {
+    appendElement(btn.elem, ...btn.classes);
+    innerHtmlFunc(btn.elem, btn.text);
+});
 
 search.innerHTML = "search";
 clear.innerHTML = "clear";
@@ -155,7 +180,7 @@ border-radius:5px;
 font-size:16px;
 padding:10px 5px;!important
 `
-for (let i = 0; i<btnGroup.length; i++) {
+for (let i = 0; i < btnGroup.length; i++) {
     document.getElementsByClassName("btn")[i].style.cssText = `
 padding:2px 5px;
 width:150px; 
@@ -170,21 +195,25 @@ cursor:pointer;
 container.onmousedown = (e) => {
     let shiftX = e.clientX - container.getBoundingClientRect().left;
     let shiftY = e.clientY - container.getBoundingClientRect().top;
-function setXY(pageX, pageY) {
-    container.style.left = pageX -shiftX + 'px';
-    container.style.top = pageY -shiftY + 'px';
-};
-function mouseMoveHandler(event) {
-    setXY(event.pageX, event.pageY)
-};
 
-setXY(e.pageX, e.pageY);
-document.addEventListener("mousemove", mouseMoveHandler);
-container.onmouseup = () => {
-document.removeEventListener("mousemove", mouseMoveHandler);
-container.onmouseup = null;
-};
-container.ondragstart = () => {return false};
+    function setXY(pageX, pageY) {
+        container.style.left = pageX - shiftX + 'px';
+        container.style.top = pageY - shiftY + 'px';
+    };
+
+    function mouseMoveHandler(event) {
+        setXY(event.pageX, event.pageY)
+    };
+
+    function mouseUpHandler() {
+        document.removeEventListener("mousemove", mouseMoveHandler);
+        container.onmouseup = null;
+    };
+
+    setXY(e.pageX, e.pageY);
+    document.addEventListener("mousemove", mouseMoveHandler);
+    container.addEventListener("mouseup", mouseUpHandler);
+    container.ondragstart = () => { return false };
 };
 
 //btn handlers
@@ -195,6 +224,7 @@ showChild.addEventListener("click", onShowChildClick);
 nextNeighbour.addEventListener("click", onnextNeighbourClick);
 prevNeighbour.addEventListener("click", onprevNeighbourClick);
 closeBtn.addEventListener("click", closeHandler);
+
 
 
 
