@@ -1,24 +1,40 @@
+function mainFunc() {
 //variables
 const container = document.createElement("div");
+container.id = "container";
 const input = document.createElement("input");
+input.id = "input";
 const search = document.createElement("button");
+search.id = "search";
 const clear = document.createElement("button");
+clear.id = "clear";
 const showParent = document.createElement("button");
+showParent.id = "showParent";
 const showChild = document.createElement("button");
+showChild.id = "showChild";
 const nextNeighbour = document.createElement("button");
+nextNeighbour.id = "nextNeighbour";
 const prevNeighbour = document.createElement("button");
-const btnGroup = document.getElementsByClassName("btn");
+prevNeighbour.id = "prevNeighbour";
 const closeBtn = document.createElement("img");
+closeBtn.id = "closeBtn";
 let currentNode = null;
 let btnArr = [
-    {elem: input, classes: ["input"], text: ""},
+    {elem: input, classes: ["input"], text: "", navname: ""},
     {elem: search, classes: ["btn", "search"], text: "search"},
     {elem: clear, classes: ["btn", "clear"], text: "clear"},
     {elem: showParent, classes: ["btn", "showParent"], text: "show parent"},
     {elem: showChild, classes: ["btn", "showChild"], text: "show child"},
     {elem: nextNeighbour, classes: ["btn", "nextNeighbour"], text: "next neighbour"},
     {elem: prevNeighbour, classes: ["btn", "prevNeighbour"], text: "prev neighbour"}
-]
+];
+
+function buttonChecker() {
+    (!currentNode.children.length) ? showChild.disabled = true : showChild.disabled = false;
+    (!currentNode.parentElement) ? showParent.disabled = true : showParent.disabled = false;
+    (!currentNode.nextElementSibling) ? nextNeighbour.disabled = true : nextNeighbour.disabled = false;
+    (!currentNode.previousElementSibling) ? prevNeighbour.disabled = true : prevNeighbour.disabled = false;
+};
 
 //search btn click-handler
 function onSearchClick() {
@@ -34,19 +50,7 @@ function onSearchClick() {
             border:red 5px solid;
             border-radius:10px;
             `
-            if (currentNode.children.length) {
-                showChild.disabled = false;
-            }
-            if (currentNode.parentElement) {
-                showParent.disabled = false;
-            }
-            if (currentNode.nextElementSibling) {
-                nextNeighbour.disabled = false;
-            }
-            if (currentNode.previousElementSibling) {
-                prevNeighbour.disabled = false;
-            }
-            return console.log(currentNode)
+            buttonChecker();
         }
     }
 };
@@ -61,19 +65,9 @@ function common(navName) {
     border:red 2px solid;
     border-radius:10px;
     `;
-    if (!currentNode.children.length) {
-        showChild.disabled = true;
-    } else showChild.disabled = false;
-    if (!currentNode.parentElement) {
-        showParent.disabled = true;
-    } else showParent.disabled = false;
-    if (!currentNode.nextElementSibling) {
-        nextNeighbour.disabled = true;
-    } else nextNeighbour.disabled = false;
-    if (!currentNode.previousElementSibling) {
-        prevNeighbour.disabled = true;
-    } else prevNeighbour.disabled = false;
+    buttonChecker();
 };
+
 
 //showParent handler
 function onShowParentClick() {
@@ -107,8 +101,8 @@ function clearInput() {
     nextNeighbour.disabled = true;
     prevNeighbour.disabled = true;
     currentNode.style.cssText = `
-border:none
-`
+    border:none
+    `
     currentNode = null;
 };
 
@@ -129,67 +123,15 @@ function innerHtmlFunc(elem, text) {
 
 document.body.prepend(container);
 container.prepend(closeBtn);
+
 btnArr.map((btn) => {
     appendElement(btn.elem, ...btn.classes);
     innerHtmlFunc(btn.elem, btn.text);
 });
 
-search.innerHTML = "search";
-clear.innerHTML = "clear";
-showParent.innerHTML = "show parent";
-showChild.innerHTML = "show child";
-nextNeighbour.innerHTML = "next neighbour";
-prevNeighbour.innerHTML = "prev neighbour";
 input.setAttribute("value", "");
 input.setAttribute("placeholder", "enter node");
-
 closeBtn.src = chrome.runtime.getURL("close.svg");
-showParent.disabled = true;
-showChild.disabled = true;
-nextNeighbour.disabled = true;
-prevNeighbour.disabled = true;
-
-//styles
-closeBtn.style.cssText = `
-width:20px;
-position:absolute;
-top:15px;
-right:15px;
-cursor:pointer;
-`
-container.style.cssText = `
-width:400px;
-height:300px;
-padding:50px 15px 50px;
-position:absolute;
-top:50vh;
-left:50vw;
-z-index:100;
-border:none;
-display:flex;
-flex-wrap:wrap;
-background-color:#FFFFFF;
-border-radius:20px; 
-justify-content:space-between;
-box-shadow: 0px 0px 22px 17px rgba(34, 60, 80, 0.4);
-`
-input.style.cssText = `
-width:100%;
-height:20px;
-border-radius:5px;
-font-size:16px;
-padding:10px 5px;!important
-`
-for (let i = 0; i < btnGroup.length; i++) {
-    document.getElementsByClassName("btn")[i].style.cssText = `
-padding:2px 5px;
-width:150px; 
-height:30px;
-border-radius:5px;
-font-size:18px;
-cursor:pointer;   
-    `
-}
 
 //drag&drop
 container.onmousedown = (e) => {
@@ -224,7 +166,7 @@ showChild.addEventListener("click", onShowChildClick);
 nextNeighbour.addEventListener("click", onnextNeighbourClick);
 prevNeighbour.addEventListener("click", onprevNeighbourClick);
 closeBtn.addEventListener("click", closeHandler);
-
+};
 
 
 

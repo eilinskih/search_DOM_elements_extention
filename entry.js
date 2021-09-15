@@ -1,0 +1,2 @@
+mainFunc();
+setStylesPopUp();
