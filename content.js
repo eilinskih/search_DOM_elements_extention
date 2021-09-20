@@ -1,23 +1,20 @@
-function mainFunc() {
-//variables
-const container = document.createElement("div");
-container.id = "container";
-const input = document.createElement("input");
-input.id = "input";
-const search = document.createElement("button");
-search.id = "search";
-const clear = document.createElement("button");
-clear.id = "clear";
-const showParent = document.createElement("button");
-showParent.id = "showParent";
-const showChild = document.createElement("button");
-showChild.id = "showChild";
-const nextNeighbour = document.createElement("button");
-nextNeighbour.id = "nextNeighbour";
-const prevNeighbour = document.createElement("button");
-prevNeighbour.id = "prevNeighbour";
-const closeBtn = document.createElement("img");
-closeBtn.id = "closeBtn";
+const initialFunc = (() => {
+
+function createElemWithId(el, id) {
+    const elem = document.createElement(el);
+    elem.setAttribute('id', id);
+    return elem
+    };
+   
+const container = createElemWithId("div", "container");
+const input = createElemWithId("input", "input");
+const search = createElemWithId("button", "search");
+const clear = createElemWithId("button", "clear");
+const showParent = createElemWithId("button", "showParent");
+const showChild = createElemWithId("button", "showChild");
+const nextNeighbour = createElemWithId("button", "nextNeighbour");
+const prevNeighbour = createElemWithId("button", "prevNeighbour");
+const closeBtn = createElemWithId("img", "closeBtn");
 let currentNode = null;
 let btnArr = [
     {elem: input, classes: ["input"], text: "", navname: ""},
@@ -28,145 +25,155 @@ let btnArr = [
     {elem: nextNeighbour, classes: ["btn", "nextNeighbour"], text: "next neighbour"},
     {elem: prevNeighbour, classes: ["btn", "prevNeighbour"], text: "prev neighbour"}
 ];
-
-function buttonChecker() {
-    (!currentNode.children.length) ? showChild.disabled = true : showChild.disabled = false;
-    (!currentNode.parentElement) ? showParent.disabled = true : showParent.disabled = false;
-    (!currentNode.nextElementSibling) ? nextNeighbour.disabled = true : nextNeighbour.disabled = false;
-    (!currentNode.previousElementSibling) ? prevNeighbour.disabled = true : prevNeighbour.disabled = false;
-};
+return {
+    container,
+    input,
+    search,
+    clear,
+    showParent,
+    showChild, 
+    nextNeighbour,
+    prevNeighbour,
+    closeBtn,
+    currentNode,
+    btnArr,
+    buttonChecker: function() {
+        showChild.disabled = !this.currentNode.children.length;
+        showParent.disabled = !this.currentNode.parentElement;
+        nextNeighbour.disabled = !this.currentNode.nextElementSibling;
+        prevNeighbour.disabled = !this.currentNode.previousElementSibling;
+    },
+    common: function(navName) {
+        this.currentNode.style.cssText = `
+        border:none
+        `;
+        this.currentNode = navName;
+        this.currentNode.style.cssText = `
+        border:red 2px solid;
+        border-radius:10px;
+        `;
+        this.buttonChecker();
+},
+innerHtmlFunc: function(elem, text) {
+    elem.innerHTML = text;
+},
+appendElement: function(elem, classes) {
+    this.container.appendChild(elem);
+    elem.classList.add(classes);
+}
+}
+})(); 
 
 //search btn click-handler
 function onSearchClick() {
-    if (input.value === "") {
-        alert("please, enter the name of element")
+    if (initialFunc.input.value === "") {
+        alert("please, enter the name of element");
     } else {
-        currentNode = document.querySelector(input.value) || document.getElementById(input.value) || document.getElementsByTagName(input.value)[0] || document.getElementsByClassName(input.value)[0];
-        if (!currentNode) {
-            input.value = "";
-            return alert("no such node")
+        initialFunc.currentNode = document.querySelector(initialFunc.input.value)
+        || document.getElementById(initialFunc.input.value)
+        || document.getElementsByTagName(initialFunc.input.value)[0]
+        || document.getElementsByClassName(initialFunc.input.value)[0];
+        if (!initialFunc.currentNode) {
+            initialFunc.input.value = "";
+            alert("no such node");
         } else {
-            currentNode.style.cssText = `
+            initialFunc.currentNode.style.cssText = `
             border:red 5px solid;
             border-radius:10px;
-            `
-            buttonChecker();
+            `;
+            initialFunc.buttonChecker();
         }
     }
 };
 
-//common handler
-function common(navName) {
-    currentNode.style.cssText = `
-    border:none
-    `;
-    currentNode = navName;
-    currentNode.style.cssText = `
-    border:red 2px solid;
-    border-radius:10px;
-    `;
-    buttonChecker();
-};
-
-
 //showParent handler
 function onShowParentClick() {
-    const navName = (currentNode.parentElement);
-    common(navName)
+    const navName = (initialFunc.currentNode.parentElement);
+    initialFunc.common(navName);
 };
 
 //showChild handler
 function onShowChildClick() {
-    const navName = (currentNode.firstElementChild);
-    common(navName)
+    const navName = (initialFunc.currentNode.firstElementChild);
+    initialFunc.common(navName);
 };
 
 //nextNeighbour handler
 function onnextNeighbourClick() {
-    const navName = (currentNode.nextElementSibling);
-    common(navName)
+    const navName = (initialFunc.currentNode.nextElementSibling);
+    initialFunc.common(navName);
 };
 
 //prevNeighbour handler
 function onprevNeighbourClick() {
-    const navName = (currentNode.previousElementSibling);
-    common(navName)
+    const navName = (initialFunc.currentNode.previousElementSibling);
+    initialFunc.common(navName);
 };
 
 //clear function
 function clearInput() {
-    input.value = "";
-    showParent.disabled = true;
-    showChild.disabled = true;
-    nextNeighbour.disabled = true;
-    prevNeighbour.disabled = true;
-    currentNode.style.cssText = `
+    initialFunc.input.value = "";
+    initialFunc.showParent.disabled = true;
+    initialFunc.showChild.disabled = true;
+    initialFunc.nextNeighbour.disabled = true;
+    initialFunc.prevNeighbour.disabled = true;
+    initialFunc.currentNode.style.cssText = `
     border:none
-    `
-    currentNode = null;
+    `;
+    initialFunc.currentNode = null;
 };
 
 //close function
 function closeHandler() {
-    container.style.display = "none";
+    initialFunc.container.style.display = "none";
 };
 
-//append to DOM
-function appendElement(elem, classes) {
-    container.appendChild(elem)
-    elem.classList.add(classes)
-};
+document.body.prepend(initialFunc.container);
+initialFunc.container.prepend(initialFunc.closeBtn);
 
-function innerHtmlFunc(elem, text) {
-    elem.innerHTML = text
-};
-
-document.body.prepend(container);
-container.prepend(closeBtn);
-
-btnArr.map((btn) => {
-    appendElement(btn.elem, ...btn.classes);
-    innerHtmlFunc(btn.elem, btn.text);
+initialFunc.btnArr.map((btn) => {
+    initialFunc.appendElement(btn.elem, ...btn.classes);
+    initialFunc.innerHtmlFunc(btn.elem, btn.text);
 });
 
-input.setAttribute("value", "");
-input.setAttribute("placeholder", "enter node");
-closeBtn.src = chrome.runtime.getURL("close.svg");
+initialFunc.input.setAttribute("value", "");
+initialFunc.input.setAttribute("placeholder", "enter node");
+initialFunc.closeBtn.src = chrome.runtime.getURL("close.svg");
 
 //drag&drop
 container.onmousedown = (e) => {
-    let shiftX = e.clientX - container.getBoundingClientRect().left;
-    let shiftY = e.clientY - container.getBoundingClientRect().top;
+    let shiftX = e.clientX - initialFunc.container.getBoundingClientRect().left;
+    let shiftY = e.clientY - initialFunc.container.getBoundingClientRect().top;
 
     function setXY(pageX, pageY) {
-        container.style.left = pageX - shiftX + 'px';
-        container.style.top = pageY - shiftY + 'px';
+        initialFunc.container.style.left = pageX - shiftX + 'px';
+        initialFunc.container.style.top = pageY - shiftY + 'px';
     };
 
     function mouseMoveHandler(event) {
-        setXY(event.pageX, event.pageY)
+        setXY(event.pageX, event.pageY);
     };
 
     function mouseUpHandler() {
         document.removeEventListener("mousemove", mouseMoveHandler);
-        container.onmouseup = null;
+        initialFunc.container.onmouseup = null;
     };
 
     setXY(e.pageX, e.pageY);
     document.addEventListener("mousemove", mouseMoveHandler);
-    container.addEventListener("mouseup", mouseUpHandler);
-    container.ondragstart = () => { return false };
+    initialFunc.container.addEventListener("mouseup", mouseUpHandler);
+    initialFunc.container.ondragstart = () => { return false };
 };
 
 //btn handlers
-search.addEventListener("click", onSearchClick);
-clear.addEventListener("click", clearInput);
-showParent.addEventListener("click", onShowParentClick);
-showChild.addEventListener("click", onShowChildClick);
-nextNeighbour.addEventListener("click", onnextNeighbourClick);
-prevNeighbour.addEventListener("click", onprevNeighbourClick);
-closeBtn.addEventListener("click", closeHandler);
-};
+initialFunc.search.addEventListener("click", onSearchClick);
+initialFunc.clear.addEventListener("click", clearInput);
+initialFunc.showParent.addEventListener("click", onShowParentClick);
+initialFunc.showChild.addEventListener("click", onShowChildClick);
+initialFunc.nextNeighbour.addEventListener("click", onnextNeighbourClick);
+initialFunc.prevNeighbour.addEventListener("click", onprevNeighbourClick);
+initialFunc.closeBtn.addEventListener("click", closeHandler);
+
 
 
 

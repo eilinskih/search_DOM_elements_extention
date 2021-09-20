@@ -22,9 +22,7 @@
           ],
           "js": [
             "content.js",
-          "styles.js",
-          "entry.js"
-
+          "styles.js"
         ]
         }
       ]

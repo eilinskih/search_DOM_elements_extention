@@ -1,4 +1,3 @@
-function setStylesPopUp() {
 
 const closeBtn = document.getElementById("closeBtn");
 const btnGroup = document.getElementsByClassName("btn");
@@ -48,5 +47,4 @@ for (let i = 0; i < btnGroup.length; i++) {
     cursor:pointer;   
     padding:2px 5px;
     `
-};
 };
